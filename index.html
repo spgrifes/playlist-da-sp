@@ -8,7 +8,9 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#0b0b0b;color:#fff;font-family:-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;padding-bottom:120px}
 header{text-align:center;padding:28px 16px 12px}
-header img{height:64px}
+header img{height:84px}
+h2{max-width:640px;margin:22px auto 4px;padding:0 16px;font-size:18px;color:#d4af37}
+h2 small{display:block;color:#999;font-size:13px;font-weight:400}
 h1{font-size:28px;margin-top:10px;letter-spacing:.5px}
 header p{color:#999;font-size:14px;margin-top:4px}
 .list{max-width:640px;margin:12px auto;padding:0 12px}
@@ -26,21 +28,24 @@ audio{width:100%;height:40px}
 </head>
 <body>
 <header>
-<img src="logo.png" alt="SP Grifes">
+<img src="logo-branca.png" alt="SP Grifes">
 <h1>Playlist da SP</h1>
 <p>Toque numa música para ouvir. Ao terminar, toca a próxima.</p>
 </header>
+<h2>Aprovadas<small>Só entra aqui a música que você aprovar.</small></h2>
 <div class="list" id="list"></div>
+<h2>Para você ouvir e aprovar<small>Gostou? Fala "pode botar na playlist".</small></h2>
+<div class="list" id="list2"></div>
 <div class="bar"><div class="n" id="now">Escolha uma música</div><audio id="au" controls></audio></div>
 <script>
 var M=[
-{n:"Black Friday no Brás",s:"Eletrônica / House",a:"audio/black-friday-no-bras.mp3",c:"capas/black-friday-no-bras.jpg"},
+{ok:1,n:"Black Friday no Brás",s:"Eletrônica / House",a:"audio/black-friday-no-bras.mp3",c:"capas/black-friday-no-bras.jpg"},
 {n:"Martino Lorenzo - O Lobo Elegante",s:"Versão A",a:"audio/o-lobo-elegante.mp3",c:"capas/o-lobo-elegante.jpg"},
 {n:"Natal no Brás",s:"Pagode / pop festivo",a:"audio/natal-no-bras.mp3",c:"capas/natal-no-bras.jpg"},
 {n:"Festa na SP Grifes",s:"Samba-rock e axé",a:"audio/festa-na-sp-grifes.mp3",c:"capas/festa-na-sp-grifes.jpg"}
 ];
-var au=document.getElementById('au'),now=document.getElementById('now'),L=document.getElementById('list'),cur=-1;
-M.forEach(function(m,i){var d=document.createElement('div');d.className='t';d.innerHTML='<img src="'+m.c+'" alt=""><div class="i"><b>'+m.n+'</b><span>'+m.s+'</span></div><div class="p">&#9654;</div>';d.onclick=function(){play(i)};L.appendChild(d);m.el=d});
+var au=document.getElementById('au'),now=document.getElementById('now'),L=document.getElementById('list'),L2=document.getElementById('list2'),cur=-1;
+M.forEach(function(m,i){var d=document.createElement('div');d.className='t';d.innerHTML='<img src="'+m.c+'" alt=""><div class="i"><b>'+m.n+'</b><span>'+m.s+'</span></div><div class="p">&#9654;</div>';d.onclick=function(){play(i)};(m.ok?L:L2).appendChild(d);m.el=d});
 function play(i){if(i>=M.length)return;cur=i;au.src=M[i].a;au.play();now.textContent=M[i].n;M.forEach(function(m,k){m.el.classList.toggle('on',k===i)})}
 au.onended=function(){play(cur+1)};
 </script>
