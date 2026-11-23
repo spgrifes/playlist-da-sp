@@ -45,7 +45,11 @@ var M=[
 {k:"black-friday-no-bras",n:"Black Friday no Brás",s:"Eletrônica / House",a:"audio/black-friday-no-bras.mp3",c:"capas/black-friday-no-bras.jpg",v:"aprovado"},
 {k:"o-lobo-elegante",n:"Martino Lorenzo - O Lobo Elegante",s:"Versão A",a:"audio/o-lobo-elegante.mp3",c:"capas/o-lobo-elegante.jpg",v:"pendente"},
 {k:"natal-no-bras",n:"Natal no Brás",s:"Pagode / pop festivo",a:"audio/natal-no-bras.mp3",c:"capas/natal-no-bras.jpg",v:"pendente"},
-{k:"festa-na-sp-grifes",n:"Festa na SP Grifes",s:"Samba-rock e axé",a:"audio/festa-na-sp-grifes.mp3",c:"capas/festa-na-sp-grifes.jpg",v:"pendente"}
+{k:"festa-na-sp-grifes",n:"Festa na SP Grifes",s:"Samba-rock e axé",a:"audio/festa-na-sp-grifes.mp3",c:"capas/festa-na-sp-grifes.jpg",v:"pendente"},
+{k:"o-lobo-elegante-b",n:"Martino Lorenzo - O Lobo Elegante",s:"Versão B",a:"audio/o-lobo-elegante-b.mp3",c:"capas/o-lobo-elegante.jpg",v:"pendente"},
+{k:"black-friday-no-site",n:"Black Friday no Site",s:"Black Friday",a:"audio/black-friday-no-site.mp3",c:"capas/black-friday-no-bras.jpg",v:"pendente"},
+{k:"o-bras-vigia-a",n:"O Brás Vigia",s:"Versão A",a:"audio/o-bras-vigia-a.mp3",c:"capas/festa-na-sp-grifes.jpg",v:"pendente"},
+{k:"o-bras-vigia-b",n:"O Brás Vigia",s:"Versão B",a:"audio/o-bras-vigia-b.mp3",c:"capas/festa-na-sp-grifes.jpg",v:"pendente"}
 ];
 var au=document.getElementById('au'),now=document.getElementById('now'),L=document.getElementById('list'),L2=document.getElementById('list2'),cur=-1;
 function voto(m,v){m.v=v;render();fetch(SB,{method:'POST',headers:Object.assign({Prefer:'resolution=merge-duplicates'},H),body:JSON.stringify({slug:m.k,voto:v,atualizado:new Date().toISOString()})}).catch(function(){})}
