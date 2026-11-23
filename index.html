@@ -21,6 +21,7 @@ header p{color:#999;font-size:14px;margin-top:4px}
 .t b{display:block;font-size:17px}
 .t span{color:#999;font-size:13px}
 .t .p{width:44px;height:44px;border-radius:50%;background:#d4af37;color:#000;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.b{margin-top:8px;display:flex;gap:8px}.b button{border:0;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600}.b .ok{background:#2e9e4f;color:#fff}.b .no{background:#3a3a3a;color:#ddd}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#111;border-top:1px solid #2a2a2a;padding:10px 14px}
 .bar .n{font-size:14px;margin-bottom:6px;text-align:center;color:#d4af37}
 audio{width:100%;height:40px}
@@ -34,20 +35,31 @@ audio{width:100%;height:40px}
 </header>
 <h2>Aprovadas<small>Só entra aqui a música que você aprovar.</small></h2>
 <div class="list" id="list"></div>
-<h2>Para você ouvir e aprovar<small>Gostou? Fala "pode botar na playlist".</small></h2>
+<h2>Para você ouvir e aprovar<small>Toque em Aprovar ou Reprovar em cada música.</small></h2>
 <div class="list" id="list2"></div>
 <div class="bar"><div class="n" id="now">Escolha uma música</div><audio id="au" controls></audio></div>
 <script>
+var SB='https://cuiqmczhtcrrxafmzmhh.supabase.co/rest/v1/playlist_votos',KEY='sb_publishable_2A36EPYGbgAXMOPj0Up6yg_IxSsYmak';
+var H={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
 var M=[
-{ok:1,n:"Black Friday no Brás",s:"Eletrônica / House",a:"audio/black-friday-no-bras.mp3",c:"capas/black-friday-no-bras.jpg"},
-{n:"Martino Lorenzo - O Lobo Elegante",s:"Versão A",a:"audio/o-lobo-elegante.mp3",c:"capas/o-lobo-elegante.jpg"},
-{n:"Natal no Brás",s:"Pagode / pop festivo",a:"audio/natal-no-bras.mp3",c:"capas/natal-no-bras.jpg"},
-{n:"Festa na SP Grifes",s:"Samba-rock e axé",a:"audio/festa-na-sp-grifes.mp3",c:"capas/festa-na-sp-grifes.jpg"}
+{k:"black-friday-no-bras",n:"Black Friday no Brás",s:"Eletrônica / House",a:"audio/black-friday-no-bras.mp3",c:"capas/black-friday-no-bras.jpg",v:"aprovado"},
+{k:"o-lobo-elegante",n:"Martino Lorenzo - O Lobo Elegante",s:"Versão A",a:"audio/o-lobo-elegante.mp3",c:"capas/o-lobo-elegante.jpg",v:"pendente"},
+{k:"natal-no-bras",n:"Natal no Brás",s:"Pagode / pop festivo",a:"audio/natal-no-bras.mp3",c:"capas/natal-no-bras.jpg",v:"pendente"},
+{k:"festa-na-sp-grifes",n:"Festa na SP Grifes",s:"Samba-rock e axé",a:"audio/festa-na-sp-grifes.mp3",c:"capas/festa-na-sp-grifes.jpg",v:"pendente"}
 ];
 var au=document.getElementById('au'),now=document.getElementById('now'),L=document.getElementById('list'),L2=document.getElementById('list2'),cur=-1;
-M.forEach(function(m,i){var d=document.createElement('div');d.className='t';d.innerHTML='<img src="'+m.c+'" alt=""><div class="i"><b>'+m.n+'</b><span>'+m.s+'</span></div><div class="p">&#9654;</div>';d.onclick=function(){play(i)};(m.ok?L:L2).appendChild(d);m.el=d});
-function play(i){if(i>=M.length)return;cur=i;au.src=M[i].a;au.play();now.textContent=M[i].n;M.forEach(function(m,k){m.el.classList.toggle('on',k===i)})}
-au.onended=function(){play(cur+1)};
+function voto(m,v){m.v=v;render();fetch(SB,{method:'POST',headers:Object.assign({Prefer:'resolution=merge-duplicates'},H),body:JSON.stringify({slug:m.k,voto:v,atualizado:new Date().toISOString()})}).catch(function(){})}
+function render(){L.innerHTML='';L2.innerHTML='';M.forEach(function(m,i){if(m.v==='reprovado')return;var d=document.createElement('div');d.className='t'+(i===cur?' on':'');
+var b=m.v==='pendente'?'<div class="b"><button class="ok">Aprovar</button><button class="no">Reprovar</button></div>':'<div class="b"><button class="no">Tirar</button></div>';
+d.innerHTML='<img src="'+m.c+'" alt=""><div class="i"><b>'+m.n+'</b><span>'+m.s+'</span>'+b+'</div><div class="p">&#9654;</div>';
+d.onclick=function(){play(i)};
+d.querySelectorAll('button').forEach(function(x){x.onclick=function(e){e.stopPropagation();voto(m,x.className==='ok'?'aprovado':'reprovado')}});
+(m.v==='aprovado'?L:L2).appendChild(d)});
+if(!L2.children.length)L2.innerHTML='<p style="color:#777;text-align:center;font-size:14px">Nenhuma música esperando aprovação.</p>'}
+function play(i){cur=i;au.src=M[i].a;au.play();now.textContent=M[i].n;render()}
+au.onended=function(){var n=cur+1;while(n<M.length&&M[n].v==='reprovado')n++;if(n<M.length)play(n)};
+render();
+fetch(SB+'?select=slug,voto',{headers:H}).then(function(r){return r.json()}).then(function(rs){rs.forEach(function(r){M.forEach(function(m){if(m.k===r.slug)m.v=r.voto})});render()}).catch(function(){});
 </script>
 </body>
 </html>
